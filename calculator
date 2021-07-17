@@ -1,0 +1,140 @@
+calculator.java
+import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class calculator extends HttpServlet {
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+    }
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+                RequestDispatcher rd=request.getRequestDispatcher("index.jsp");  
+                rd.include(request, response);  
+            }
+         
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+         
+                String n1 = request.getParameter("number1");
+                String n2 = request.getParameter("number2");  
+                int no1=Integer.parseInt(n1);
+                int no2=Integer.parseInt(n2);
+            
+                int res;
+                if(request.getParameter("btnsubmit").equals("Addition"))
+                {
+                    String j="+";
+                res=no1+no2;
+                request.setAttribute("opp", j);
+                }
+                else  if(request.getParameter("btnsubmit").equals("Subraction"))
+                {
+                    String j="-";
+                res=no1-no2;
+                request.setAttribute("opp", j);
+                }                
+                else  if(request.getParameter("btnsubmit").equals("Multiplication"))
+                {
+                    String j="*";
+                res=no1*no2;
+                request.setAttribute("opp", j);
+                }
+                else
+                {   
+                    String j="/";
+                    res=no1/no2;
+                    request.setAttribute("opp", j);
+                }
+                request.setAttribute("no1", no1);
+                request.setAttribute("no2", no2);
+                request.setAttribute("res", res);
+                request.setAttribute("equal","=");
+                RequestDispatcher rd=request.getRequestDispatcher("index.jsp");  
+                rd.forward(request, response);                 
+            }
+}
+
+
+index.jsp
+
+<html>
+    <head>
+        <title>Calculator</title>
+    </head>
+    <body>
+        <form action="calculator" method="POST">        
+               Enter num1:
+               <input name="number1" type="text"/>
+        
+                Enter num2:
+               <input name="number2" type="text" />
+
+                <input type="submit" name="btnsubmit" value="Addition" />
+                <input type="submit" name="btnsubmit" value="Subraction" />
+                <input type="submit" name="btnsubmit" value="Division" />
+                <input type="submit" name="btnsubmit" value="Multiplication" />
+            
+        </form>
+        <% 
+        if(request.getAttribute("no1")!=null)
+        {
+            out.println(request.getAttribute("no1"));
+        }
+        if(request.getAttribute("opp")!=null)
+        {
+            out.println(request.getAttribute("opp"));
+        }
+        if(request.getAttribute("no2")!=null)
+        {
+            out.println(request.getAttribute("no2"));
+        }
+        if(request.getAttribute("equal")!=null)
+        {
+            out.println(request.getAttribute("equal"));
+        }
+        
+        if(request.getAttribute("res")!=null)
+        {
+            out.print(request.getAttribute("res"));
+        }
+    %>
+    </body>
+    </html>
+
+
+
+
+
+web.xml
+    
+    <web-app>  
+  <servlet>
+    <servlet-name>TestServlet</servlet-name>
+    <servlet-class>com.exam.calculatorTest</servlet-class>
+    </servlet>
+  <servlet>  
+  <servlet-name>s1</servlet-name>  
+  <servlet-class>com.exam.calculator</servlet-class>  
+  </servlet>  
+  <servlet-mapping>
+    <servlet-name>TestServlet</servlet-name>
+    <url-pattern>/test</url-pattern>
+</servlet-mapping>
+  <servlet-mapping>  
+  <servlet-name>s1</servlet-name>  
+  <url-pattern>/calculator</url-pattern>  
+  </servlet-mapping>
+
+
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+        </welcome-file-list>
+  </web-app>
